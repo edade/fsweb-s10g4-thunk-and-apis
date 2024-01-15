@@ -2,14 +2,16 @@ import React, { useEffect } from "react";
 import { Switch, Route, NavLink } from "react-router-dom";
 import Item from "./components/Item";
 import FavItem from "./components/FavItem";
-import { fetchAnother } from "./actions";
+import { fetchAnother, addFav } from "./actions";
 import { useDispatch, useSelector } from "react-redux";
 
 export default function App() {
   const dispatch = useDispatch();
   const { loading, current, favs } = useSelector((state) => state);
 
-  function addToFavs() {}
+  function addToFavs() {
+    dispatch(addFav(current));
+  }
 
   useEffect(() => dispatch(fetchAnother()), []);
 
@@ -57,7 +59,7 @@ export default function App() {
           <div className="flex flex-col gap-3">
             {favs.length > 0 ? (
               favs.map((item) => (
-                <FavItem key={item.key} id={item.key} title={item.activity} />
+                <FavItem key={item.id} id={item.id} title={item.setup} />
               ))
             ) : (
               <div className="bg-white p-6 text-center shadow-md">

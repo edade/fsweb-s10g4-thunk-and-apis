@@ -29,7 +29,7 @@ export function myReducer(state = initial, action) {
 
     case FAV_REMOVE:
       const remainingFavs = state.favs.filter(
-        (item) => item.id == action.payload
+        (item) => item.id !== action.payload
       );
       return { ...state, favs: remainingFavs };
 
