@@ -2,7 +2,12 @@ import React, { useEffect } from "react";
 import { Switch, Route, NavLink } from "react-router-dom";
 import Item from "./components/Item";
 import FavItem from "./components/FavItem";
-import { fetchAnother, addFav } from "./actions";
+import {
+  fetchAnother,
+  addFav,
+  getFavsFromLocalStorage,
+  DELETE_FAVS,
+} from "./actions";
 import { useDispatch, useSelector } from "react-redux";
 
 export default function App() {
@@ -13,7 +18,18 @@ export default function App() {
     dispatch(addFav(current));
   }
 
-  useEffect(() => dispatch(fetchAnother()), []);
+  function bringNew() {
+    dispatch(fetchAnother());
+  }
+
+  function deleteFavs() {
+    dispatch({ type: DELETE_FAVS });
+  }
+
+  useEffect(() => {
+    dispatch(fetchAnother());
+    dispatch(getFavsFromLocalStorage());
+  }, []);
 
   return (
     <div className="wrapper max-w-xl mx-auto px-4">
@@ -43,7 +59,10 @@ export default function App() {
           {current && <Item data={current} />}
 
           <div className="flex gap-3 justify-end py-3">
-            <button className="select-none px-4 py-2 border border-blue-700 text-blue-700 hover:border-blue-500 hover:text-blue-500">
+            <button
+              onClick={bringNew}
+              className="select-none px-4 py-2 border border-blue-700 text-blue-700 hover:border-blue-500 hover:text-blue-500"
+            >
               Başka bir tane
             </button>
             <button
@@ -52,15 +71,23 @@ export default function App() {
             >
               Favorilere ekle
             </button>
+            <button
+              onClick={deleteFavs}
+              className="select-none px-4 py-2 bg-blue-700 hover:bg-blue-600 text-white"
+            >
+              Favorileri Sil
+            </button>
           </div>
         </Route>
 
         <Route path="/favs">
           <div className="flex flex-col gap-3">
             {favs.length > 0 ? (
-              favs.map((item) => (
-                <FavItem key={item.id} id={item.id} title={item.setup} />
-              ))
+              favs.map((item) =>
+                item.id ? (
+                  <FavItem key={item.id} id={item.id} title={item.setup} />
+                ) : null
+              )
             ) : (
               <div className="bg-white p-6 text-center shadow-md">
                 Henüz bir favoriniz yok
