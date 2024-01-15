@@ -43,12 +43,14 @@ export function myReducer(state = initial, action) {
       );
       const remainingFavState = { ...state, favs: remainingFavs };
       writeFavsToLocalStorage(remainingFavState);
+      toast.success("Başarıyla Silindi");
       return remainingFavState;
 
     case FETCH_SUCCESS:
       return { ...state, loading: false, current: action.payload, error: null };
 
     case FETCH_LOADING:
+      toast.success(" Yeni şaka geldi :)");
       return { ...state, loading: true, current: null };
 
     case FETCH_ERROR:
@@ -62,6 +64,7 @@ export function myReducer(state = initial, action) {
       return { ...state };
     case DELETE_FAVS:
       deleteFavsFromLocalStorage();
+      toast.warn("Favorileri temzlediniz :(");
       return { ...state, favs: initial.favs };
 
     default:
